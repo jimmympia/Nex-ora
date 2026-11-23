@@ -2273,27 +2273,32 @@ function _openDriveBrowser(onFilesReady) {
       return;
     }
     const view = new google.picker.DocsView(google.picker.ViewId.DOCS)
-      .setIncludeFolders(true)
-      .setSelectFolderEnabled(false)
-      .setMode(google.picker.DocsViewMode.LIST);
-    const folderView = new google.picker.DocsView(google.picker.ViewId.FOLDERS)
-      .setSelectFolderEnabled(false)
-      .setMode(google.picker.DocsViewMode.LIST);
-    const pb = new google.picker.PickerBuilder()
-      .addView(view)
-      .addView(folderView)
-      .enableFeature(google.picker.Feature.MULTISELECT_ENABLED)
-      .enableFeature(google.picker.Feature.SUPPORT_DRIVES)
-      .setOAuthToken(token)
-      .setDeveloperKey(GOOGLE_API_KEY)
-      .setTitle('Choisir un ou plusieurs fichiers')
-      .setCallback(_onPickerPicked)
-      .setSize(Math.min(window.innerWidth - 20, 1050), Math.min(window.innerHeight - 40, 650));
-    // Obligatoire avec la portée drive.file : numéro du projet Google Cloud
-    if (typeof pb.setAppId === 'function') pb.setAppId(GOOGLE_APP_ID);
-    if (typeof pb.setOrigin === 'function') pb.setOrigin(window.location.protocol + '//' + window.location.host);
-    const picker = pb.build();
-    picker.setVisible(true);
+  .setIncludeFolders(true)
+  .setSelectFolderEnabled(true)
+  .setMode(google.picker.DocsViewMode.LIST);
+
+const folderView = new google.picker.DocsView(google.picker.ViewId.FOLDERS)
+  .setIncludeFolders(true)
+  .setSelectFolderEnabled(true)
+  .setMode(google.picker.DocsViewMode.LIST);
+
+const pb = new google.picker.PickerBuilder()
+  .addView(view)
+  .addView(folderView)
+  .enableFeature(google.picker.Feature.MULTISELECT_ENABLED)
+  .enableFeature(google.picker.Feature.SUPPORT_DRIVES)
+  .setOAuthToken(token)
+  .setDeveloperKey(GOOGLE_API_KEY)
+  .setTitle('Choisir des fichiers ou des dossiers')
+  .setCallback(_onPickerPicked)
+  .setSize(Math.min(window.innerWidth - 20, 1050), Math.min(window.innerHeight - 40, 650));
+
+// Obligatoire avec la portée drive.file
+if (typeof pb.setAppId === 'function') pb.setAppId(GOOGLE_APP_ID);
+if (typeof pb.setOrigin === 'function') pb.setOrigin(window.location.protocol + '//' + window.location.host);
+
+const picker = pb.build();
+picker.setVisible(true);
   };
 
   const afterToken = (token) => {
