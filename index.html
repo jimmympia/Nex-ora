@@ -2272,14 +2272,17 @@ function _openDriveBrowser(onFilesReady) {
       _showDriveAuthHelp('picker_unavailable');
       return;
     }
-    const view = new google.picker.DocsView(google.picker.ViewId.DOCS)
+    // Vue principale : fichiers + dossiers sélectionnables
+const view = new google.picker.DocsView(google.picker.ViewId.DOCS)
   .setIncludeFolders(true)
   .setSelectFolderEnabled(true)
   .setMode(google.picker.DocsViewMode.LIST);
 
+// Vue uniquement dossiers (plus fiable pour sélectionner un dossier)
 const folderView = new google.picker.DocsView(google.picker.ViewId.FOLDERS)
   .setIncludeFolders(true)
   .setSelectFolderEnabled(true)
+  .setMimeTypes('application/vnd.google-apps.folder')
   .setMode(google.picker.DocsViewMode.LIST);
 
 const pb = new google.picker.PickerBuilder()
@@ -2293,7 +2296,6 @@ const pb = new google.picker.PickerBuilder()
   .setCallback(_onPickerPicked)
   .setSize(Math.min(window.innerWidth - 20, 1050), Math.min(window.innerHeight - 40, 650));
 
-// Obligatoire avec la portée drive.file
 if (typeof pb.setAppId === 'function') pb.setAppId(GOOGLE_APP_ID);
 if (typeof pb.setOrigin === 'function') pb.setOrigin(window.location.protocol + '//' + window.location.host);
 
